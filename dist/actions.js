@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.getUsers = exports.createUser = void 0;
+exports.getProductos = exports.añadirProductos = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var Usuario_1 = require("./entities/Usuario");
 var utils_1 = require("./utils");
@@ -81,3 +81,46 @@ var getUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 exports.getUsers = getUsers;
+var añadirProductos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var productoRepo, user, newUser, results;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                // important validations to avoid ambiguos errors, the client needs to understand what went wrong
+                if (!req.body.stock)
+                    throw new utils_1.Exception("Ingrese el stock");
+                if (!req.body.precio)
+                    throw new utils_1.Exception("Igrese el precio");
+                if (!req.body.nombre)
+                    throw new utils_1.Exception("Igrese el nombre");
+                if (!req.body.descripcion)
+                    throw new utils_1.Exception("Ingrese una descipción");
+                if (!req.body.fotoDePortada)
+                    throw new utils_1.Exception("Ingrese una imagen");
+                productoRepo = typeorm_1.getRepository(Usuario_1.Usuario);
+                return [4 /*yield*/, productoRepo.findOne({ where: { email: req.body.email } })];
+            case 1:
+                user = _a.sent();
+                if (user)
+                    throw new utils_1.Exception("Users already exists with this email");
+                newUser = typeorm_1.getRepository(Usuario_1.Usuario).create(req.body);
+                return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario).save(newUser)];
+            case 2:
+                results = _a.sent();
+                return [2 /*return*/, res.json(results)];
+        }
+    });
+}); };
+exports.añadirProductos = añadirProductos;
+var getProductos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var users;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario).find()];
+            case 1:
+                users = _a.sent();
+                return [2 /*return*/, res.json(users)];
+        }
+    });
+}); };
+exports.getProductos = getProductos;
