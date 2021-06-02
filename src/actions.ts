@@ -6,8 +6,8 @@ import { Exception } from './utils'
 export const createUser = async (req: Request, res:Response): Promise<Response> =>{
 
 	// important validations to avoid ambiguos errors, the client needs to understand what went wrong
-	if(!req.body.first_name) throw new Exception("Please provide a first_name")
-	if(!req.body.last_name) throw new Exception("Please provide a last_name")
+	if(!req.body.nombre) throw new Exception("Please provide a nombre")
+	if(!req.body.apellido) throw new Exception("Please provide a apellido")
 	if(!req.body.email) throw new Exception("Please provide an email")
 	if(!req.body.password) throw new Exception("Please provide a password")
 
