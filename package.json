@@ -49,7 +49,8 @@
     "start": "NODE_ENV=development tsc-watch --project . --onSuccess 'nodemon ./dist/app.js'",
     "build": "rm -rf ./dist && tsc --project ./",
     "makemigrations": "typeorm migration:generate -n M && npm run build",
-    "migrate": "typeorm migration:run"
+    "migrate": "typeorm migration:run",
+    "diagram": "typeorm-uml ormconfig.js"
   },
   "keywords": [],
   "author": "Manuel Ortega Carcamo",
