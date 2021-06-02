@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { getRepository } from 'typeorm'  // getRepository"  traer una tabla de la base de datos asociada al objeto
 import { Usuario } from './entities/Usuario'
 import { Exception } from './utils'
+import { Productos } from './entities/Productos'
 
 export const createUser = async (req: Request, res:Response): Promise<Response> =>{
 
@@ -36,17 +37,17 @@ export const añadirProductos = async (req: Request, res:Response): Promise<Resp
 	if(!req.body.descripcion) throw new Exception("Ingrese una descipción")
 	if(!req.body.fotoDePortada) throw new Exception("Ingrese una imagen")
 
-	const productoRepo = getRepository(Usuario)
+	const productoRepo = getRepository(Productos)
 	// fetch for any user with this email
-	const user = await productoRepo.findOne({ where: {email: req.body.email }})
-	if(user) throw new Exception("Users already exists with this email")
+	const producto = await productoRepo.findOne({ where: {nombre: req.body.nombre }})
+	if(producto) throw new Exception("Ya existe un producto con ese nombre")
 
-	const newUser = getRepository(Usuario).create(req.body);  //Creo un usuario
-	const results = await getRepository(Usuario).save(newUser); //Grabo el nuevo usuario 
+	const newProduct = getRepository(Productos).create(req.body);  //Creo un producto
+	const results = await getRepository(Productos).save(newProduct); //Grabo el nuevo producto 
 	return res.json(results);
 }
 
-export const getProductos = async (req: Request, res: Response): Promise<Response> =>{
-		const users = await getRepository(Usuario).find();
-		return res.json(users);
+export const listarProductos = async (req: Request, res: Response): Promise<Response> =>{
+		const productos = await getRepository(Productos).find();
+		return res.json(productos);
 }

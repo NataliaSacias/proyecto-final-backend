@@ -36,10 +36,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.getProductos = exports.añadirProductos = exports.getUsers = exports.createUser = void 0;
+exports.listarProductos = exports.añadirProductos = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var Usuario_1 = require("./entities/Usuario");
 var utils_1 = require("./utils");
+var Productos_1 = require("./entities/Productos");
 var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userRepo, user, newUser, results;
     return __generator(this, function (_a) {
@@ -82,7 +83,7 @@ var getUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
 }); };
 exports.getUsers = getUsers;
 var añadirProductos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var productoRepo, user, newUser, results;
+    var productoRepo, producto, newProduct, results;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -97,14 +98,14 @@ var añadirProductos = function (req, res) { return __awaiter(void 0, void 0, vo
                     throw new utils_1.Exception("Ingrese una descipción");
                 if (!req.body.fotoDePortada)
                     throw new utils_1.Exception("Ingrese una imagen");
-                productoRepo = typeorm_1.getRepository(Usuario_1.Usuario);
-                return [4 /*yield*/, productoRepo.findOne({ where: { email: req.body.email } })];
+                productoRepo = typeorm_1.getRepository(Productos_1.Productos);
+                return [4 /*yield*/, productoRepo.findOne({ where: { nombre: req.body.nombre } })];
             case 1:
-                user = _a.sent();
-                if (user)
-                    throw new utils_1.Exception("Users already exists with this email");
-                newUser = typeorm_1.getRepository(Usuario_1.Usuario).create(req.body);
-                return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario).save(newUser)];
+                producto = _a.sent();
+                if (producto)
+                    throw new utils_1.Exception("Ya existe un producto con ese nombre");
+                newProduct = typeorm_1.getRepository(Productos_1.Productos).create(req.body);
+                return [4 /*yield*/, typeorm_1.getRepository(Productos_1.Productos).save(newProduct)];
             case 2:
                 results = _a.sent();
                 return [2 /*return*/, res.json(results)];
@@ -112,15 +113,15 @@ var añadirProductos = function (req, res) { return __awaiter(void 0, void 0, vo
     });
 }); };
 exports.añadirProductos = añadirProductos;
-var getProductos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var users;
+var listarProductos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var productos;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario).find()];
+            case 0: return [4 /*yield*/, typeorm_1.getRepository(Productos_1.Productos).find()];
             case 1:
-                users = _a.sent();
-                return [2 /*return*/, res.json(users)];
+                productos = _a.sent();
+                return [2 /*return*/, res.json(productos)];
         }
     });
 }); };
-exports.getProductos = getProductos;
+exports.listarProductos = listarProductos;
