@@ -24,33 +24,41 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 exports.__esModule = true;
-exports.Planet = void 0;
+exports.Direccion = void 0;
 var typeorm_1 = require("typeorm");
-var Users_1 = require("./Users");
-var Planet = /** @class */ (function (_super) {
-    __extends(Planet, _super);
-    function Planet() {
+var Usuario_1 = require("./Usuario");
+var Direccion = /** @class */ (function (_super) {
+    __extends(Direccion, _super);
+    function Direccion() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     __decorate([
         typeorm_1.PrimaryGeneratedColumn(),
         __metadata("design:type", Number)
-    ], Planet.prototype, "id");
+    ], Direccion.prototype, "id");
     __decorate([
-        typeorm_1.Column({ unique: true }),
+        typeorm_1.Column(),
         __metadata("design:type", String)
-    ], Planet.prototype, "name");
+    ], Direccion.prototype, "numCasa");
     __decorate([
-        typeorm_1.Column({ nullable: true }),
+        typeorm_1.Column(),
         __metadata("design:type", String)
-    ], Planet.prototype, "picture_url");
+    ], Direccion.prototype, "departamento");
     __decorate([
-        typeorm_1.ManyToMany(function () { return Users_1.Users; }, function (user) { return user.planets; }),
-        __metadata("design:type", Array)
-    ], Planet.prototype, "users");
-    Planet = __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Direccion.prototype, "ciudad");
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Direccion.prototype, "calle");
+    __decorate([
+        typeorm_1.ManyToOne(function () { return Usuario_1.Usuario; }, function (usuario) { return usuario.id; }),
+        __metadata("design:type", Usuario_1.Usuario)
+    ], Direccion.prototype, "usuario");
+    Direccion = __decorate([
         typeorm_1.Entity()
-    ], Planet);
-    return Planet;
+    ], Direccion);
+    return Direccion;
 }(typeorm_1.BaseEntity));
-exports.Planet = Planet;
+exports.Direccion = Direccion;

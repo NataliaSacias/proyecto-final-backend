@@ -24,36 +24,45 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 exports.__esModule = true;
-exports.Users = void 0;
+exports.Productos = void 0;
 var typeorm_1 = require("typeorm");
-var Users = /** @class */ (function (_super) {
-    __extends(Users, _super);
-    function Users() {
+var Carrito_1 = require("./Carrito");
+var Productos = /** @class */ (function (_super) {
+    __extends(Productos, _super);
+    function Productos() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     __decorate([
         typeorm_1.PrimaryGeneratedColumn(),
         __metadata("design:type", Number)
-    ], Users.prototype, "id");
+    ], Productos.prototype, "id");
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", Number)
+    ], Productos.prototype, "stock");
+    __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", Number)
+    ], Productos.prototype, "precio");
+    __decorate([
+        typeorm_1.Column( /* {unique: true} */),
+        __metadata("design:type", String)
+    ], Productos.prototype, "nombre");
     __decorate([
         typeorm_1.Column(),
         __metadata("design:type", String)
-    ], Users.prototype, "first_name");
+    ], Productos.prototype, "descripcion");
     __decorate([
         typeorm_1.Column(),
         __metadata("design:type", String)
-    ], Users.prototype, "last_name");
+    ], Productos.prototype, "fotoDePortada");
     __decorate([
-        typeorm_1.Column({ unique: true }),
-        __metadata("design:type", String)
-    ], Users.prototype, "email");
-    __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", String)
-    ], Users.prototype, "password");
-    Users = __decorate([
+        typeorm_1.ManyToOne(function () { return Carrito_1.Carrito; }, function (carrito) { return carrito.id; }),
+        __metadata("design:type", Carrito_1.Carrito)
+    ], Productos.prototype, "carrito");
+    Productos = __decorate([
         typeorm_1.Entity()
-    ], Users);
-    return Users;
+    ], Productos);
+    return Productos;
 }(typeorm_1.BaseEntity));
-exports.Users = Users;
+exports.Productos = Productos;
