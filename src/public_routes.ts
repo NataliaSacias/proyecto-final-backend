@@ -11,11 +11,14 @@ import { safe } from './utils';
 import { createUser } from './actions';
 import { añadirProductos } from './actions';
 import { listarProductos } from './actions';
+import * as actions from './actions';
+
 
 
 const router = Router();
 
 // signup route, creates a new user in the DB
+router.post('/login', safe(actions.login));
 router.post('/user', safe(createUser));
 router.post('/productos', safe(añadirProductos));
 router.get('/productos', safe(listarProductos));
