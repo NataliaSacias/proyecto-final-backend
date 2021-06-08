@@ -25,5 +25,6 @@ router.get('/productos', safe(listarProductos));
 router.get('/productos/:id', safe(actions.verDetalleProducto));
 router.delete('/user/:id', safe(actions.deleteUser));
 router.delete('/productos/:id', safe(actions.deleteProducto));
+router.post('/user/email', safe(actions.cambioDePass));
 
 export default router;

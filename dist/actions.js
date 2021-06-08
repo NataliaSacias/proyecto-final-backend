@@ -39,11 +39,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.login = exports.verDetalleProducto = exports.deleteProducto = exports.deleteUser = exports.listarProductos = exports.añadirProductos = exports.getUsers = exports.createUser = void 0;
+exports.login = exports.cambioDePass = exports.verDetalleProducto = exports.deleteProducto = exports.deleteUser = exports.listarProductos = exports.añadirProductos = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var Usuario_1 = require("./entities/Usuario");
 var utils_1 = require("./utils");
 var Productos_1 = require("./entities/Productos");
+var nodemailer_1 = __importDefault(require("nodemailer"));
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userRepo, user, newUser, results;
@@ -165,6 +166,64 @@ var verDetalleProducto = function (req, res) { return __awaiter(void 0, void 0, 
     });
 }); };
 exports.verDetalleProducto = verDetalleProducto;
+var cambioDePass = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var email, usuarioCorreo, token, main;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                email = req.body.email;
+                if (!email)
+                    throw new utils_1.Exception("Please provide an email");
+                return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario).findOne({ where: { email: email } })];
+            case 1:
+                usuarioCorreo = _a.sent();
+                if (!usuarioCorreo)
+                    throw new utils_1.Exception("Si el correo ingresado es correco se enviara instricciones para cambiar la contraseña");
+                else {
+                    token = jsonwebtoken_1["default"].sign({ usuarioCorreo: usuarioCorreo }, process.env.JWT_KEY);
+                    main = function () { return __awaiter(void 0, void 0, void 0, function () {
+                        var testAccount, transporter, info;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0: return [4 /*yield*/, nodemailer_1["default"].createTestAccount()];
+                                case 1:
+                                    testAccount = _a.sent();
+                                    testAccount.user = "landaproductosorganicos@gmail.com";
+                                    testAccount.pass = "landa2021";
+                                    transporter = nodemailer_1["default"].createTransport({
+                                        host: "smtp.gmail.com",
+                                        port: 465,
+                                        secure: true,
+                                        auth: {
+                                            user: testAccount.user,
+                                            pass: testAccount.pass
+                                        }
+                                    });
+                                    return [4 /*yield*/, transporter.sendMail({
+                                            from: '"landaproductosorganicos 👻" <landaproductosorganicos@gmail.com>',
+                                            to: "sepeca15@gmail.com",
+                                            subject: "Hello ✔",
+                                            text: "Hello world?",
+                                            html: "<b>Hello world?</b>"
+                                        })];
+                                case 2:
+                                    info = _a.sent();
+                                    console.log("Message sent: %s", info.messageId);
+                                    // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+                                    // Preview only available when sending through an Ethereal account
+                                    console.log("Preview URL: %s", nodemailer_1["default"].getTestMessageUrl(info));
+                                    return [2 /*return*/];
+                            }
+                        });
+                    }); };
+                    main()["catch"](console.error);
+                    return [2 /*return*/, res.json("Si el correo ingresado es correco se enviara instricciones para cambiar la contraseña")];
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.cambioDePass = cambioDePass;
 // ********************** TOKEN **********************
 var login = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userRepo, user, token;
