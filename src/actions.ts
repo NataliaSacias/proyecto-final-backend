@@ -64,6 +64,11 @@ export const deleteProducto = async (req: Request, res: Response): Promise<Respo
     return res.json(deleteproducto);
 }
 
+export const verDetalleProducto = async (req: Request, res: Response): Promise<Response> =>{
+    const verDetalle = await getRepository(Productos).findOne(req.params.id);
+		return res.json(verDetalle);
+}
+
 
 // ********************** TOKEN **********************
 
