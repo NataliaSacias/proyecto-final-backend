@@ -35,11 +35,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 exports.__esModule = true;
-exports.getUsers = exports.createUser = void 0;
+exports.login = exports.deleteProducto = exports.deleteUser = exports.listarProductos = exports.añadirProductos = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var Usuario_1 = require("./entities/Usuario");
 var utils_1 = require("./utils");
+var Productos_1 = require("./entities/Productos");
+var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userRepo, user, newUser, results;
     return __generator(this, function (_a) {
@@ -81,3 +86,97 @@ var getUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 exports.getUsers = getUsers;
+var añadirProductos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var productoRepo, producto, newProduct, results;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                // important validations to avoid ambiguos errors, the client needs to understand what went wrong
+                if (!req.body.stock)
+                    throw new utils_1.Exception("Ingrese el stock");
+                if (!req.body.precio)
+                    throw new utils_1.Exception("Igrese el precio");
+                if (!req.body.nombre)
+                    throw new utils_1.Exception("Igrese el nombre");
+                if (!req.body.descripcion)
+                    throw new utils_1.Exception("Ingrese una descipción");
+                if (!req.body.fotoDePortada)
+                    throw new utils_1.Exception("Ingrese una imagen");
+                productoRepo = typeorm_1.getRepository(Productos_1.Productos);
+                return [4 /*yield*/, productoRepo.findOne({ where: { nombre: req.body.nombre } })];
+            case 1:
+                producto = _a.sent();
+                if (producto)
+                    throw new utils_1.Exception("Ya existe un producto con ese nombre");
+                newProduct = typeorm_1.getRepository(Productos_1.Productos).create(req.body);
+                return [4 /*yield*/, typeorm_1.getRepository(Productos_1.Productos).save(newProduct)];
+            case 2:
+                results = _a.sent();
+                return [2 /*return*/, res.json(results)];
+        }
+    });
+}); };
+exports.añadirProductos = añadirProductos;
+var listarProductos = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var productos;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, typeorm_1.getRepository(Productos_1.Productos).find()];
+            case 1:
+                productos = _a.sent();
+                return [2 /*return*/, res.json(productos)];
+        }
+    });
+}); };
+exports.listarProductos = listarProductos;
+var deleteUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var users;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario)["delete"](req.params.id)];
+            case 1:
+                users = _a.sent();
+                return [2 /*return*/, res.json(users)];
+        }
+    });
+}); };
+exports.deleteUser = deleteUser;
+var deleteProducto = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var deleteproducto;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, typeorm_1.getRepository(Productos_1.Productos)["delete"](req.params.id)];
+            case 1:
+                deleteproducto = _a.sent();
+                return [2 /*return*/, res.json(deleteproducto)];
+        }
+    });
+}); };
+exports.deleteProducto = deleteProducto;
+// ********************** TOKEN **********************
+var login = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var userRepo, user, token;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!req.body.email)
+                    throw new utils_1.Exception("Please specify an email on your request body", 400);
+                if (!req.body.password)
+                    throw new utils_1.Exception("Please specify a password on your request body", 400);
+                return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario)
+                    // We need to validate that a user with this email and password exists in the DB
+                ];
+            case 1:
+                userRepo = _a.sent();
+                return [4 /*yield*/, userRepo.findOne({ where: { email: req.body.email, password: req.body.password } })];
+            case 2:
+                user = _a.sent();
+                if (!user)
+                    throw new utils_1.Exception("Invalid email or password", 401);
+                token = jsonwebtoken_1["default"].sign({ user: user }, process.env.JWT_KEY);
+                // return the user and the recently created token to the client
+                return [2 /*return*/, res.json({ user: user, token: token })];
+        }
+    });
+}); };
+exports.login = login;
