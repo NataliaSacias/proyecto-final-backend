@@ -22,5 +22,8 @@ router.post('/login', safe(actions.login));
 router.post('/user', safe(createUser));
 router.post('/productos', safe(añadirProductos));
 router.get('/productos', safe(listarProductos));
+// router.get('/productos/:id', safe(verDetalleProducto));
+router.delete('/user/:id', safe(actions.deleteUser));
+router.delete('/productos/:id', safe(actions.deleteProducto));
 
 export default router;

@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.login = exports.listarProductos = exports.añadirProductos = exports.getUsers = exports.createUser = void 0;
+exports.login = exports.deleteProducto = exports.deleteUser = exports.listarProductos = exports.añadirProductos = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var Usuario_1 = require("./entities/Usuario");
 var utils_1 = require("./utils");
@@ -129,6 +129,30 @@ var listarProductos = function (req, res) { return __awaiter(void 0, void 0, voi
     });
 }); };
 exports.listarProductos = listarProductos;
+var deleteUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var users;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario)["delete"](req.params.id)];
+            case 1:
+                users = _a.sent();
+                return [2 /*return*/, res.json(users)];
+        }
+    });
+}); };
+exports.deleteUser = deleteUser;
+var deleteProducto = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var deleteproducto;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, typeorm_1.getRepository(Productos_1.Productos)["delete"](req.params.id)];
+            case 1:
+                deleteproducto = _a.sent();
+                return [2 /*return*/, res.json(deleteproducto)];
+        }
+    });
+}); };
+exports.deleteProducto = deleteProducto;
 // ********************** TOKEN **********************
 var login = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userRepo, user, token;

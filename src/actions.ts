@@ -54,6 +54,16 @@ export const listarProductos = async (req: Request, res: Response): Promise<Resp
 		return res.json(productos);
 }
 
+export const deleteUser = async (req: Request, res: Response): Promise<Response> =>{
+    const users = await getRepository(Usuario).delete(req.params.id);
+    return res.json(users);
+}
+
+export const deleteProducto = async (req: Request, res: Response): Promise<Response> =>{
+    const deleteproducto = await getRepository(Productos).delete(req.params.id);
+    return res.json(deleteproducto);
+}
+
 
 // ********************** TOKEN **********************
 
