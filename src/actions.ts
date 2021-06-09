@@ -78,14 +78,16 @@ export const cambioDePass = async (req: Request, res: Response): Promise<Respons
     if (!usuarioCorreo) throw new Exception("Si el correo ingresado es correco se enviara instricciones para cambiar la contraseña")
     else {
         const token = jwt.sign({ usuarioCorreo }, process.env.JWT_KEY as string);
+        const tokenToSend = token.replace(/\./g,"$");
+        console.log(tokenToSend)
 
         // async..await is not allowed in global scope, must use a wrapper
         const main = async () => {
             // Generate test SMTP service account from ethereal.email
             // Only needed if you don't have a real mail account for testing
             let testAccount = await nodemailer.createTestAccount();
-            testAccount.user = "landaproductosorganicos@gmail.com"
-            testAccount.pass = "landa2021"
+            testAccount.user = process.env.CORREO as string
+            testAccount.pass = process.env.PASSCORREO as string
 
             // create reusable transporter object using the default SMTP transport
             let transporter = nodemailer.createTransport({
@@ -100,11 +102,11 @@ export const cambioDePass = async (req: Request, res: Response): Promise<Respons
 
             // send mail with defined transport object
             let info = await transporter.sendMail({
-                from: '"landaproductosorganicos 👻" <landaproductosorganicos@gmail.com>', // sender address
-                to: "sepeca15@gmail.com", // list of receivers
-                subject: "Hello ✔", // Subject line
-                text: "Hello world?", // plain text body
-                html: "<b>Hello world?</b>", // html body
+                from: '"Landa Productos Organicos 🍌🍊🥗🥕" <landaproductosorganicos@gmail.com>', // sender address
+                to: usuarioCorreo.email, // list of receivers
+                subject: "Cambio de contraseña ✔", // Subject line
+                text: "Hello "+usuarioCorreo.nombre+" si solicitaste el cambio de contraseña entra en el siguiente "+process.env.FRONTEND_URL+"/cambiopass/"+tokenToSend+" de lo contrario ignora este mail", // plain text body
+                html: "Hello "+usuarioCorreo.nombre+" si solicitaste el cambio de contraseña entra en el siguiente "+process.env.FRONTEND_URL+"/cambiopass/"+tokenToSend+" de lo contrario ignora este mail", // html body
             });
 
             console.log("Message sent: %s", info.messageId);

@@ -167,7 +167,7 @@ var verDetalleProducto = function (req, res) { return __awaiter(void 0, void 0, 
 }); };
 exports.verDetalleProducto = verDetalleProducto;
 var cambioDePass = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var email, usuarioCorreo, token, main;
+    var email, usuarioCorreo, token, tokenToSend_1, main;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -181,6 +181,8 @@ var cambioDePass = function (req, res) { return __awaiter(void 0, void 0, void 0
                     throw new utils_1.Exception("Si el correo ingresado es correco se enviara instricciones para cambiar la contraseña");
                 else {
                     token = jsonwebtoken_1["default"].sign({ usuarioCorreo: usuarioCorreo }, process.env.JWT_KEY);
+                    tokenToSend_1 = token.replace(/\./g, "$");
+                    console.log(tokenToSend_1);
                     main = function () { return __awaiter(void 0, void 0, void 0, function () {
                         var testAccount, transporter, info;
                         return __generator(this, function (_a) {
@@ -188,8 +190,8 @@ var cambioDePass = function (req, res) { return __awaiter(void 0, void 0, void 0
                                 case 0: return [4 /*yield*/, nodemailer_1["default"].createTestAccount()];
                                 case 1:
                                     testAccount = _a.sent();
-                                    testAccount.user = "landaproductosorganicos@gmail.com";
-                                    testAccount.pass = "landa2021";
+                                    testAccount.user = process.env.CORREO;
+                                    testAccount.pass = process.env.PASSCORREO;
                                     transporter = nodemailer_1["default"].createTransport({
                                         host: "smtp.gmail.com",
                                         port: 465,
@@ -200,11 +202,11 @@ var cambioDePass = function (req, res) { return __awaiter(void 0, void 0, void 0
                                         }
                                     });
                                     return [4 /*yield*/, transporter.sendMail({
-                                            from: '"landaproductosorganicos 👻" <landaproductosorganicos@gmail.com>',
-                                            to: "sepeca15@gmail.com",
-                                            subject: "Hello ✔",
-                                            text: "Hello world?",
-                                            html: "<b>Hello world?</b>"
+                                            from: '"Landa Productos Organicos 🍌🍊🥗🥕" <landaproductosorganicos@gmail.com>',
+                                            to: usuarioCorreo.email,
+                                            subject: "Cambio de contraseña ✔",
+                                            text: "Hello " + usuarioCorreo.nombre + " si solicitaste el cambio de contraseña entra en el siguiente " + process.env.FRONTEND_URL + "/cambiopass/" + tokenToSend_1 + " de lo contrario ignora este mail",
+                                            html: "Hello " + usuarioCorreo.nombre + " si solicitaste el cambio de contraseña entra en el siguiente " + process.env.FRONTEND_URL + "/cambiopass/" + tokenToSend_1 + " de lo contrario ignora este mail"
                                         })];
                                 case 2:
                                     info = _a.sent();
