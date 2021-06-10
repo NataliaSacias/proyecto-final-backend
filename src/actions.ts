@@ -74,11 +74,11 @@ export const verDetalleProducto = async (req: Request, res: Response): Promise<R
 export const cambioDePass = async (req: Request, res: Response): Promise<Response> => {
     const email = req.body.email
     if (!email) throw new Exception("Please provide an email")
-    const usuarioCorreo = await getRepository(Usuario).findOne({ where: { email: email } });
-    if (!usuarioCorreo) throw new Exception("Si el correo ingresado es correco se enviara instricciones para cambiar la contraseña")
+    const user = await getRepository(Usuario).findOne({ where: { email: email } });
+    if (!user) throw new Exception("Si el correo ingresado es correco se enviara instricciones para cambiar la contraseña")
     else {
-        const token = jwt.sign({ usuarioCorreo }, process.env.JWT_KEY as string);
-        const tokenToSend = token.replace(/\./g,"$");
+        const token = jwt.sign({ user }, process.env.JWT_KEY as string);
+        const tokenToSend = token.replace(/\./g, "$");
         console.log(tokenToSend)
 
         // async..await is not allowed in global scope, must use a wrapper
@@ -103,10 +103,10 @@ export const cambioDePass = async (req: Request, res: Response): Promise<Respons
             // send mail with defined transport object
             let info = await transporter.sendMail({
                 from: '"Landa Productos Organicos 🍌🍊🥗🥕" <landaproductosorganicos@gmail.com>', // sender address
-                to: usuarioCorreo.email, // list of receivers
+                to: user.email, // list of receivers
                 subject: "Cambio de contraseña ✔", // Subject line
-                text: "Hello "+usuarioCorreo.nombre+" si solicitaste el cambio de contraseña entra en el siguiente "+process.env.FRONTEND_URL+"/cambiopass/"+tokenToSend+" de lo contrario ignora este mail", // plain text body
-                html: "Hello "+usuarioCorreo.nombre+" si solicitaste el cambio de contraseña entra en el siguiente "+process.env.FRONTEND_URL+"/cambiopass/"+tokenToSend+" de lo contrario ignora este mail", // html body
+                text: "Hello " + user.nombre + " si solicitaste el cambio de contraseña entra en el siguiente " + process.env.FRONTEND_URL + "/cambiopass/" + tokenToSend + " de lo contrario ignora este mail", // plain text body
+                html: "Hello " + user.nombre + " si solicitaste el cambio de contraseña entra en el siguiente " + process.env.FRONTEND_URL + "/cambiopass/" + tokenToSend + " de lo contrario ignora este mail", // html body
             });
 
             console.log("Message sent: %s", info.messageId);
@@ -123,6 +123,26 @@ export const cambioDePass = async (req: Request, res: Response): Promise<Respons
         return res.json("Si el correo ingresado es correco se enviara instricciones para cambiar la contraseña");
     }
 }
+
+interface IToken {
+    user: Usuario,
+    iat: number
+}
+
+export const putCambiarPass = async (req: Request, res: Response): Promise<Response> => {
+    const token = req.user as IToken
+    console.log(token)
+    if (!req.body.pass) throw new Exception("Ingrese el pass en body")
+    if (!req.body.confirmarpass) throw new Exception("Igrese el confirmarpass en body")
+    if (req.body.pass !== req.body.confirmarpass) throw new Exception("Las pass no coinciden")
+    const user = await getRepository(Usuario).findOne({email:token.user.email});
+    if (user) {
+    user.password = req.body.pass
+        await getRepository(Usuario).save(user);
+    } 
+    return res.json("Se cambio la pass");
+}
+
 
 // ********************** TOKEN **********************
 

@@ -42,7 +42,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
         const decoded = jwt.verify(token as string, process.env.JWT_KEY as string) as IPayload
         console.log(decoded)
         //req.user = decoded;
-        req.user = decoded.user.id
+        req.user = decoded
         next()
     } catch (error) {
         return res.status(400).json('ACCESS DENIED2');
@@ -53,5 +53,6 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
 
 
 router.get('/user',verifyToken, safe(actions.getUsers));
+router.put('/user/email/cambiarpass',verifyToken, safe(actions.putCambiarPass));
 
 export default router;

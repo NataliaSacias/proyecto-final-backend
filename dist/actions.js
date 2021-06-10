@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.login = exports.cambioDePass = exports.verDetalleProducto = exports.deleteProducto = exports.deleteUser = exports.listarProductos = exports.añadirProductos = exports.getUsers = exports.createUser = void 0;
+exports.login = exports.putCambiarPass = exports.cambioDePass = exports.verDetalleProducto = exports.deleteProducto = exports.deleteUser = exports.listarProductos = exports.añadirProductos = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var Usuario_1 = require("./entities/Usuario");
 var utils_1 = require("./utils");
@@ -167,7 +167,7 @@ var verDetalleProducto = function (req, res) { return __awaiter(void 0, void 0, 
 }); };
 exports.verDetalleProducto = verDetalleProducto;
 var cambioDePass = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var email, usuarioCorreo, token, tokenToSend_1, main;
+    var email, user, token, tokenToSend_1, main;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -176,11 +176,11 @@ var cambioDePass = function (req, res) { return __awaiter(void 0, void 0, void 0
                     throw new utils_1.Exception("Please provide an email");
                 return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario).findOne({ where: { email: email } })];
             case 1:
-                usuarioCorreo = _a.sent();
-                if (!usuarioCorreo)
+                user = _a.sent();
+                if (!user)
                     throw new utils_1.Exception("Si el correo ingresado es correco se enviara instricciones para cambiar la contraseña");
                 else {
-                    token = jsonwebtoken_1["default"].sign({ usuarioCorreo: usuarioCorreo }, process.env.JWT_KEY);
+                    token = jsonwebtoken_1["default"].sign({ user: user }, process.env.JWT_KEY);
                     tokenToSend_1 = token.replace(/\./g, "$");
                     console.log(tokenToSend_1);
                     main = function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -203,10 +203,10 @@ var cambioDePass = function (req, res) { return __awaiter(void 0, void 0, void 0
                                     });
                                     return [4 /*yield*/, transporter.sendMail({
                                             from: '"Landa Productos Organicos 🍌🍊🥗🥕" <landaproductosorganicos@gmail.com>',
-                                            to: usuarioCorreo.email,
+                                            to: user.email,
                                             subject: "Cambio de contraseña ✔",
-                                            text: "Hello " + usuarioCorreo.nombre + " si solicitaste el cambio de contraseña entra en el siguiente " + process.env.FRONTEND_URL + "/cambiopass/" + tokenToSend_1 + " de lo contrario ignora este mail",
-                                            html: "Hello " + usuarioCorreo.nombre + " si solicitaste el cambio de contraseña entra en el siguiente " + process.env.FRONTEND_URL + "/cambiopass/" + tokenToSend_1 + " de lo contrario ignora este mail"
+                                            text: "Hello " + user.nombre + " si solicitaste el cambio de contraseña entra en el siguiente " + process.env.FRONTEND_URL + "/cambiopass/" + tokenToSend_1 + " de lo contrario ignora este mail",
+                                            html: "Hello " + user.nombre + " si solicitaste el cambio de contraseña entra en el siguiente " + process.env.FRONTEND_URL + "/cambiopass/" + tokenToSend_1 + " de lo contrario ignora este mail"
                                         })];
                                 case 2:
                                     info = _a.sent();
@@ -226,6 +226,33 @@ var cambioDePass = function (req, res) { return __awaiter(void 0, void 0, void 0
     });
 }); };
 exports.cambioDePass = cambioDePass;
+var putCambiarPass = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var token, user;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                token = req.user;
+                console.log(token);
+                if (!req.body.pass)
+                    throw new utils_1.Exception("Ingrese el pass en body");
+                if (!req.body.confirmarpass)
+                    throw new utils_1.Exception("Igrese el confirmarpass en body");
+                if (req.body.pass !== req.body.confirmarpass)
+                    throw new utils_1.Exception("Las pass no coinciden");
+                return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario).findOne({ email: token.user.email })];
+            case 1:
+                user = _a.sent();
+                if (!user) return [3 /*break*/, 3];
+                user.password = req.body.pass;
+                return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario).save(user)];
+            case 2:
+                _a.sent();
+                _a.label = 3;
+            case 3: return [2 /*return*/, res.json("Se cambio la pass")];
+        }
+    });
+}); };
+exports.putCambiarPass = putCambiarPass;
 // ********************** TOKEN **********************
 var login = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userRepo, user, token;
