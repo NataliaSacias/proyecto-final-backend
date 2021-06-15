@@ -7,7 +7,6 @@ import emailjs from "emailjs-com";
 import nodemailer from "nodemailer"
 import jwt from "jsonwebtoken"
 
-
 export const createUser = async (req: Request, res: Response): Promise<Response> => {
 
     // important validations to avoid ambiguos errors, the client needs to understand what went wrong
@@ -135,11 +134,11 @@ export const putCambiarPass = async (req: Request, res: Response): Promise<Respo
     if (!req.body.pass) throw new Exception("Ingrese el pass en body")
     if (!req.body.confirmarpass) throw new Exception("Igrese el confirmarpass en body")
     if (req.body.pass !== req.body.confirmarpass) throw new Exception("Las pass no coinciden")
-    const user = await getRepository(Usuario).findOne({email:token.user.email});
+    const user = await getRepository(Usuario).findOne({ email: token.user.email });
     if (user) {
-    user.password = req.body.pass
+        user.password = req.body.pass
         await getRepository(Usuario).save(user);
-    } 
+    }
     return res.json("Se cambio la pass");
 }
 
