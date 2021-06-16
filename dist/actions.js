@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.login = exports.putCambiarPass = exports.cambioDePass = exports.verDetalleProducto = exports.deleteProducto = exports.deleteUser = exports.listarProductos = exports.añadirProductos = exports.getUsers = exports.createUser = void 0;
+exports.login = exports.putCambiarPass = exports.cambioDePass = exports.verDetalleProducto = exports.deleteProducto = exports.getUsersDeatalles = exports.deleteUser = exports.listarProductos = exports.añadirProductos = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var Usuario_1 = require("./entities/Usuario");
 var utils_1 = require("./utils");
@@ -142,6 +142,20 @@ var deleteUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
     });
 }); };
 exports.deleteUser = deleteUser;
+var getUsersDeatalles = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var token, users;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                token = req.user;
+                return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario).findOne({ where: { email: token.user.email } })];
+            case 1:
+                users = _a.sent();
+                return [2 /*return*/, res.json(users)];
+        }
+    });
+}); };
+exports.getUsersDeatalles = getUsersDeatalles;
 var deleteProducto = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var deleteproducto;
     return __generator(this, function (_a) {
@@ -205,8 +219,8 @@ var cambioDePass = function (req, res) { return __awaiter(void 0, void 0, void 0
                                             from: '"Landa Productos Organicos 🍌🍊🥗🥕" <landaproductosorganicos@gmail.com>',
                                             to: user.email,
                                             subject: "Cambio de contraseña ✔",
-                                            text: "Hello " + user.nombre + " si solicitaste el cambio de contraseña entra en el siguiente " + process.env.FRONTEND_URL + "/cambiopass/" + tokenToSend_1 + " de lo contrario ignora este mail",
-                                            html: "Hello " + user.nombre + " si solicitaste el cambio de contraseña entra en el siguiente " + process.env.FRONTEND_URL + "/cambiopass/" + tokenToSend_1 + " de lo contrario ignora este mail"
+                                            text: "¡Hola! " + user.nombre + " Solicitaste modificar tu contraseña en Landa.  Haciendo click en el siguiente link, te permitirá ingresar una nueva contraseña. " + process.env.FRONTEND_URL + "/cambiopass/" + tokenToSend_1,
+                                            html: "¡Hola! " + user.nombre + " Solicitaste modificar tu contraseña en Landa.  Haciendo click en el siguiente link, te permitirá ingresar una nueva contraseña. " + process.env.FRONTEND_URL + "/cambiopass/" + tokenToSend_1
                                         })];
                                 case 2:
                                     info = _a.sent();

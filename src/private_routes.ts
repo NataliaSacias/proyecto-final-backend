@@ -53,6 +53,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
 
 
 router.get('/user',verifyToken, safe(actions.getUsers));
+router.get('/user/data',verifyToken, safe(actions.getUsersDeatalles));
 router.put('/user/email/cambiarpass',verifyToken, safe(actions.putCambiarPass));
 
 export default router;

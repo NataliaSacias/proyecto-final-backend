@@ -60,5 +60,6 @@ var verifyToken = function (req, res, next) {
     }
 };
 router.get('/user', verifyToken, utils_1.safe(actions.getUsers));
+router.get('/user/data', verifyToken, utils_1.safe(actions.getUsersDeatalles));
 router.put('/user/email/cambiarpass', verifyToken, utils_1.safe(actions.putCambiarPass));
 exports["default"] = router;

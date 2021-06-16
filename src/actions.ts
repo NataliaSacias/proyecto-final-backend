@@ -60,6 +60,14 @@ export const deleteUser = async (req: Request, res: Response): Promise<Response>
     return res.json(users);
 }
 
+
+export const getUsersDeatalles = async (req: Request, res: Response): Promise<Response> => {
+    const token = req.user as IToken
+
+    const users = await getRepository(Usuario).findOne({where: {email:token.user.email}});
+    return res.json(users);
+}
+
 export const deleteProducto = async (req: Request, res: Response): Promise<Response> => {
     const deleteproducto = await getRepository(Productos).delete(req.params.id);
     return res.json(deleteproducto);
@@ -104,8 +112,8 @@ export const cambioDePass = async (req: Request, res: Response): Promise<Respons
                 from: '"Landa Productos Organicos 🍌🍊🥗🥕" <landaproductosorganicos@gmail.com>', // sender address
                 to: user.email, // list of receivers
                 subject: "Cambio de contraseña ✔", // Subject line
-                text: "Hello " + user.nombre + " si solicitaste el cambio de contraseña entra en el siguiente " + process.env.FRONTEND_URL + "/cambiopass/" + tokenToSend + " de lo contrario ignora este mail", // plain text body
-                html: "Hello " + user.nombre + " si solicitaste el cambio de contraseña entra en el siguiente " + process.env.FRONTEND_URL + "/cambiopass/" + tokenToSend + " de lo contrario ignora este mail", // html body
+                text: "¡Hola! "+user.nombre+" Solicitaste modificar tu contraseña en Landa.  Haciendo click en el siguiente link, te permitirá ingresar una nueva contraseña. " + process.env.FRONTEND_URL + "/cambiopass/" + tokenToSend , // plain text body
+                html: "¡Hola! "+user.nombre+" Solicitaste modificar tu contraseña en Landa.  Haciendo click en el siguiente link, te permitirá ingresar una nueva contraseña. " + process.env.FRONTEND_URL + "/cambiopass/" + tokenToSend , // html body
             });
 
             console.log("Message sent: %s", info.messageId);
