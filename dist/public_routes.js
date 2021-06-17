@@ -32,13 +32,38 @@ var actions_1 = require("./actions");
 var actions_2 = require("./actions");
 var actions_3 = require("./actions");
 var actions = __importStar(require("./actions"));
+var mercadopago = require('mercadopago');
+var bodyParser = require('body-parser');
+var express = require('express');
+mercadopago.configurations.setAccessToken("TEST-4572519004823516-061514-a6deb6f6fb9a5c182042b1f86c230ae9-171807171");
+//middleware de mercado pago para los parametros de la vista
+var app = express();
+// parse application/x-www-form-urlencoded
+var mwmercadopago = app.use(bodyParser.urlencoded({ extended: false }));
 var router = express_1.Router();
 // signup route, creates a new user in the DB
 router.post('/login', utils_1.safe(actions.login));
 router.post('/user', utils_1.safe(actions_1.createUser));
 router.post('/productos', utils_1.safe(actions_2.añadirProductos));
 router.get('/productos', utils_1.safe(actions_3.listarProductos));
-// router.get('/productos/:id', safe(verDetalleProducto));
+router.get('/productos/:id', utils_1.safe(actions.verDetalleProducto));
 router["delete"]('/user/:id', utils_1.safe(actions.deleteUser));
 router["delete"]('/productos/:id', utils_1.safe(actions.deleteProducto));
+router.post('/user/email', utils_1.safe(actions.cambioDePass));
+router.post('/comprar', mwmercadopago, function (req, res) {
+    var preference = {
+        items: [{
+                title: req.body.title,
+                unit_price: parseInt(req.body.price),
+                quantity: 1
+            }]
+    };
+    mercadopago.preferences.create(preference)
+        .then(function (response) {
+        console.log(response);
+        res.redirect(response.body.init_point);
+    })["catch"](function (error) {
+        console.log(error);
+    });
+});
 exports["default"] = router;

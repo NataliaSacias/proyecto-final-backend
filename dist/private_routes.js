@@ -52,7 +52,7 @@ var verifyToken = function (req, res, next) {
         var decoded = jsonwebtoken_1["default"].verify(token, process.env.JWT_KEY);
         console.log(decoded);
         //req.user = decoded;
-        req.user = decoded.user.id;
+        req.user = decoded;
         next();
     }
     catch (error) {
@@ -60,4 +60,6 @@ var verifyToken = function (req, res, next) {
     }
 };
 router.get('/user', verifyToken, utils_1.safe(actions.getUsers));
+router.get('/user/data', verifyToken, utils_1.safe(actions.getUsersDeatalles));
+router.put('/user/email/cambiarpass', verifyToken, utils_1.safe(actions.putCambiarPass));
 exports["default"] = router;
